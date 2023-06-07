@@ -19,7 +19,7 @@ export default function App() {
      fetch("https://kotiki.shuttleapp.rs/api/cats")
       .then(response =>  response.json())
       .then(data => setCats(data as Cat[]));
-  })
+  },[])
   return (
     <>      
         <Grid m='xl'>{
