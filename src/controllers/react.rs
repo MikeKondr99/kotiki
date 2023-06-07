@@ -22,10 +22,12 @@ impl From<ReactController> for Vec<Route> {
 
 #[get("/")]
 async fn index(state:&State<MyState>) -> io::Result<NamedFile> {
-  NamedFile::open(Path::new(&state.folder).join("index.html")).await
+  NamedFile::open(Path::new(&state.folder).join("react").join("index.html")).await
 }
 
 #[get("/<file..>")]
 async fn files(file: PathBuf,state:&State<MyState>) -> io::Result<NamedFile> {
-  NamedFile::open(Path::new(&state.folder).join(file)).await
+  let a = Path::new(&state.folder).join("react").join(file);
+  error!("{:?}",a);
+  NamedFile::open(a).await
 }

@@ -19,7 +19,7 @@ struct MyState {
 #[shuttle_runtime::main]
 async fn rocket(
     #[shuttle_shared_db::Postgres] pool: PgPool,
-    #[shuttle_static_folder::StaticFolder(folder = "frontend/build")] public_folder: PathBuf
+    #[shuttle_static_folder::StaticFolder(folder = "public")] public_folder: PathBuf
 ) -> ShuttleRocket {
     pool.execute(include_str!("../schema.sql")).await.map_err(CustomError::new)?;
     let state = MyState {
