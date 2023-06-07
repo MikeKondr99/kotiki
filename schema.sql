@@ -1,4 +1,4 @@
-DROP TABLE cats;
+DROP TABLE IF EXISTS cats;
 CREATE TABLE IF NOT EXISTS cats (
     id SERIAL PRIMARY KEY,
     name varchar(50) NOT NULL,
