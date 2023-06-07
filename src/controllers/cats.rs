@@ -16,6 +16,6 @@ impl From<CatsController> for Vec<Route> {
 
 #[get("/cats")]
 async fn get_cats(state: &State<MyState>) -> Json<Vec<Cat>> {
-    let res = sqlx::query_as::<_,Cat>("SELECT * FROM cats").fetch_all(&state.0).await.unwrap();
+    let res = sqlx::query_as::<_,Cat>("SELECT * FROM cats").fetch_all(&state.db).await.unwrap();
     Json(res)
 }
