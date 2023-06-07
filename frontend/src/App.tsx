@@ -16,7 +16,7 @@ interface Cat {
 export default function App() {
   const [cats,setCats] = useState<Cat[]>([])
   useEffect(() => {
-     fetch("https://127.0.0.1:8000/api/cats")
+     fetch("https://kotiki.shuttleapp.rs/api/cats")
       .then(response =>  response.json())
       .then(data => setCats(data as Cat[]));
   })
