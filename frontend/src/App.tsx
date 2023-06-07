@@ -1,26 +1,44 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { Grid } from '@mantine/core'
+import './App.css'
+import { BadgeCard } from './Components/BadgeCard'
+import { useEffect, useState } from 'react'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+interface Cat {
+    name: string,
+    age: number,
+    color: string,
+    sex: string,
+    image: string | undefined,
+    breed: string | undefined,
+    sterilized: boolean,
 }
 
-export default App;
+export default function App() {
+  const [cats,setCats] = useState<Cat[]>([])
+  useEffect(() => {
+     fetch("https://127.0.0.1:8000/api/cats")
+      .then(response =>  response.json())
+      .then(data => setCats(data as Cat[]));
+  })
+  return (
+    <>      
+        <Grid m='xl'>{
+          cats.map(c =>
+            <Grid.Col xs={3}>
+              <BadgeCard 
+                image={c.image} 
+                name={c.name} 
+                breed={c.breed}
+                age= {c.age}
+                color={c.color}
+                sex = {c.sex}
+                sterilized = {c.sterilized}
+                ></BadgeCard>
+            </Grid.Col>
+          )}
+        </Grid>
+    </>
+
+  )
+}
+
