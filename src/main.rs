@@ -1,6 +1,6 @@
 mod models;
 mod controllers;
-use controllers::CatsController;
+use controllers::{CatsController, ReactController};
 
 use shuttle_rocket::ShuttleRocket;
 use shuttle_runtime::CustomError;
@@ -17,6 +17,7 @@ async fn rocket(#[shuttle_shared_db::Postgres] pool: PgPool) -> ShuttleRocket {
     let state = MyState(pool);
     let rocket = rocket::build()
         .manage(state)
+        .mount("/", ReactController)
         .mount("/api", CatsController);
     Ok(rocket.into())
 }
