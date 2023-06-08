@@ -10,5 +10,6 @@ pub struct Cat {
     sex: String,
     image: Option<String>,
     breed: Option<String>,
+    description: Option<String>,
     sterilized: bool,
 }

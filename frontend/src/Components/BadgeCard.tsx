@@ -8,7 +8,7 @@ import {
     createStyles,
     rem,
 } from '@mantine/core';
-import { IconHeart, IconCoin } from '@tabler/icons-react';
+import { IconHeart, IconCoin,IconMars,IconVenus } from '@tabler/icons-react';
 
 const useStyles = createStyles((theme) => ({
     card: {
@@ -25,6 +25,10 @@ const useStyles = createStyles((theme) => ({
 
     like: {
         color: theme.colors.red[6],
+    },
+
+    mars: {
+        color: theme.colors.blue[6],
     },
 
     coin: {
@@ -46,9 +50,10 @@ interface BadgeCardProps {
     image: string | undefined,
     breed: string | undefined,
     sterilized: boolean,
+    description: string | undefined
 }
 
-export function BadgeCard({ name, age, color, image, breed, }: BadgeCardProps) {
+export function BadgeCard({ name, age, color, image, breed,description,sex }: BadgeCardProps) {
     const { classes, } = useStyles();
 
 
@@ -60,19 +65,24 @@ export function BadgeCard({ name, age, color, image, breed, }: BadgeCardProps) {
 
             <Card.Section className={classes.section} mt="md">
                 <Group position="left">
+                    {
+                        sex == "M" ?  <IconMars size="1.5rem" className={classes.mars} stroke={1.8} />
+                        : sex == "F" ?  <IconVenus size="1.5rem" className={classes.like} stroke={1.8} />
+                        : <></>
+                    }
                     <Text fz="lg" fw={500}>
-                        {name} {age} Лет
+                        {name} {age} { age%10 == 1 ? 'Год' : age%10 >= 2 && age%10 <=4 ? 'Года' : 'Лет' }
                     </Text>
                 </Group>
                 <Group position="left" mt='xs'>
-                    <Badge size="sm">{breed}</Badge>
+                    { !!breed ? <Badge size="sm">{breed}</Badge> : <></> }
                     <Badge size="sm">{color}</Badge>
                 </Group>
             </Card.Section>
 
             <Card.Section className={classes.section}>
                 <Text fz="sm" mt="xs">
-                    Описание забыли сделать
+                    { description }
                 </Text>
 
                 <Group mt="xs">

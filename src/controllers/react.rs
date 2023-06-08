@@ -1,6 +1,5 @@
 
 use rocket::Route;
-use std::env;
 use tracing::error;
 use rocket::fs::NamedFile;
 use std::io;

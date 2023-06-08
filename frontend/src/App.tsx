@@ -11,12 +11,13 @@ interface Cat {
     image: string | undefined,
     breed: string | undefined,
     sterilized: boolean,
+    description: string | undefined
 }
 
 export default function App() {
   const [cats,setCats] = useState<Cat[]>([])
   useEffect(() => {
-     fetch("https://kotiki.shuttleapp.rs/api/cats")
+     fetch(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/api/cats`)
       .then(response =>  response.json())
       .then(data => setCats(data as Cat[]));
   },[])
@@ -33,6 +34,7 @@ export default function App() {
                 color={c.color}
                 sex = {c.sex}
                 sterilized = {c.sterilized}
+                description={c.description}
                 ></BadgeCard>
             </Grid.Col>
           )}
