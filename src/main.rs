@@ -36,13 +36,13 @@ impl Fairing for CORS {
 
 #[shuttle_runtime::main]
 async fn rocket(
-    #[shuttle_shared_db::Postgres] pool: PgPool,
-    #[shuttle_static_folder::StaticFolder(folder = "public")] public_folder: PathBuf
+    #[shuttle_shared_db::Postgres] db: PgPool,
+    #[shuttle_static_folder::StaticFolder(folder = "public")] folder: PathBuf
 ) -> ShuttleRocket {
-    pool.execute(include_str!("../schema.sql")).await.map_err(CustomError::new)?;
+    db.execute(include_str!("../scheme.sql")).await.map_err(CustomError::new)?;
     let state = MyState {
-        db:pool,
-        folder:public_folder,
+        db,
+        folder,
     };
     let rocket = rocket::build()
         .attach(CORS)

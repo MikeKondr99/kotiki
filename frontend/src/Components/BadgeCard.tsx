@@ -8,7 +8,7 @@ import {
     createStyles,
     rem,
 } from '@mantine/core';
-import { IconHeart, IconCoin,IconMars,IconVenus } from '@tabler/icons-react';
+import { IconHeart, IconCoin,IconMars,IconVenus,IconTrash,IconEdit } from '@tabler/icons-react';
 
 const useStyles = createStyles((theme) => ({
     card: {
@@ -43,58 +43,70 @@ const useStyles = createStyles((theme) => ({
 }));
 
 interface BadgeCardProps {
-    name: string,
-    age: number,
-    color: string,
-    sex: string,
-    image: string | undefined,
-    breed: string | undefined,
-    sterilized: boolean,
-    description: string | undefined
+    cat: Cat,
+    onDelete:(cat:Cat) => void,
+    onEdit:(cat:Cat) => void,
 }
 
-export function BadgeCard({ name, age, color, image, breed,description,sex }: BadgeCardProps) {
-    const { classes, } = useStyles();
+export interface Cat {
+  id: number,
+  name: string,
+  age: number,
+  color: string,
+  sex: string,
+  image: string | undefined,
+  breed: string | undefined,
+  sterilized: boolean,
+  description: string | undefined
+}
 
+export function BadgeCard({cat,onDelete,onEdit, }: BadgeCardProps) {
+
+    const { classes, } = useStyles();
 
     return (
         <Card withBorder radius="md" p="md" className={classes.card}>
             <Card.Section>
-                <Image src={image} alt={name} height={230} />
+                <Image src={cat.image} alt={cat.name} height={230} withPlaceholder/>
             </Card.Section>
 
             <Card.Section className={classes.section} mt="md">
                 <Group position="left">
                     {
-                        sex == "M" ?  <IconMars size="1.5rem" className={classes.mars} stroke={1.8} />
-                        : sex == "F" ?  <IconVenus size="1.5rem" className={classes.like} stroke={1.8} />
+                        cat.sex == "M" ?  <IconMars size="1.5rem" className={classes.mars} stroke={1.8} />
+                        : cat.sex == "F" ?  <IconVenus size="1.5rem" className={classes.like} stroke={1.8} />
                         : <></>
                     }
                     <Text fz="lg" fw={500}>
-                        {name} {age} { age%10 == 1 ? 'Год' : age%10 >= 2 && age%10 <=4 ? 'Года' : 'Лет' }
+                        {cat.name} {cat.age} { cat.age%10 == 1 ? 'Год' : cat.age%10 >= 2 && cat.age%10 <=4 ? 'Года' : 'Лет' }
                     </Text>
                 </Group>
                 <Group position="left" mt='xs'>
-                    { !!breed ? <Badge size="sm">{breed}</Badge> : <></> }
-                    <Badge size="sm">{color}</Badge>
+                    { !!cat.breed ? <Badge size="sm">{cat.breed}</Badge> : <></> }
+                    <Badge size="sm">{cat.color}</Badge>
                 </Group>
             </Card.Section>
 
             <Card.Section className={classes.section}>
                 <Text fz="sm" mt="xs">
-                    { description }
+                    { cat.description }
                 </Text>
 
-                <Group mt="xs">
+                <Group mt="xs" spacing='xs'>
                     <div style={{ flex: 1 }}>
 
                     </div>
                     <ActionIcon variant="default" radius="md" size={36}>
                         <IconCoin size="1.5rem" className={classes.coin} stroke={1.8} />
                     </ActionIcon>
-
                     <ActionIcon variant="default" radius="md" size={36}>
                         <IconHeart size="1.4rem" className={classes.like} stroke={1.8} />
+                    </ActionIcon>
+                    <ActionIcon variant="default" radius="md" size={36}>
+                        <IconEdit size="1.4rem" className={classes.mars} stroke={1.8} onClick={() => onEdit(cat)} />
+                    </ActionIcon>
+                    <ActionIcon color="red" variant="filled" size={36} onClick={() => onDelete(cat)}>
+                        <IconTrash size="1.4rem" stroke={1.8} />
                     </ActionIcon>
                 </Group>
             </Card.Section>
