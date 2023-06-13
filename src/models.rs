@@ -3,14 +3,14 @@ use sqlx::FromRow;
 
 #[derive(Serialize, Deserialize, FromRow)]
 pub struct Cat {
-    pub id: Option<i32>,
+    pub id: i32,
     pub name: String,
     pub age: i32,
     pub color: String,
     pub sex: String,
-    pub image: Option<String>,
-    pub breed: Option<String>,
-    pub description: Option<String>,
+    pub image: String,
+    pub breed: String,
+    pub description: String,
     pub sterilized: bool,
 }
 
@@ -20,8 +20,8 @@ pub struct UpdateCat {
     pub age: i32,
     pub color: String,
     pub sex: String,
-    pub image: Option<String>,
-    pub breed: Option<String>,
-    pub description: Option<String>,
+    pub image: String,
+    pub breed: String,
+    pub description: String,
     pub sterilized: bool,
 }

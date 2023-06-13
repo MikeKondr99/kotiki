@@ -1,6 +1,5 @@
-
 DROP TABLE IF EXISTS cats;
-CREATE TABLE IF NOT EXISTS cats (
+CREATE TABLE cats (
     id SERIAL PRIMARY KEY,
     name varchar(50) NOT NULL,
     age integer NOT NULL,

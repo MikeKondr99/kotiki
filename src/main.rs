@@ -2,12 +2,14 @@ mod models;
 mod controllers;
 use std::path::PathBuf;
 
+use shuttle_shared_db::Postgres;
+use shuttle_static_folder::StaticFolder;
+
 use controllers::{CatsController, ReactController};
 
 use rocket::{http::Header, Response, Request, fairing::{Info, Fairing, Kind}};
 use shuttle_rocket::ShuttleRocket;
-use shuttle_runtime::CustomError;
-use sqlx::{Executor, PgPool};
+use sqlx::PgPool;
 
 
 struct MyState {
@@ -36,14 +38,17 @@ impl Fairing for CORS {
 
 #[shuttle_runtime::main]
 async fn rocket(
-    #[shuttle_shared_db::Postgres] db: PgPool,
-    #[shuttle_static_folder::StaticFolder(folder = "public")] folder: PathBuf
+    #[Postgres] db: PgPool,
+    #[StaticFolder(folder = "public")] folder: PathBuf
 ) -> ShuttleRocket {
-    db.execute(include_str!("../scheme.sql")).await.map_err(CustomError::new)?;
     let state = MyState {
         db,
         folder,
     };
+    sqlx::migrate!("./migrations")
+        .run(&state.db)
+        .await
+        .expect("Migrations failed!");
     let rocket = rocket::build()
         .attach(CORS)
         .manage(state)
