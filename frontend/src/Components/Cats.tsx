@@ -1,36 +1,62 @@
-import { Alert, Grid, Loader } from "@mantine/core";
-import { BadgeCard, Cat } from "./BadgeCard";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { Alert, Grid, Loader, Modal, useMantineTheme } from "@mantine/core";
+import { BadgeCard } from "./BadgeCard";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { IconAlertCircle } from "@tabler/icons-react";
+import { catsDelete, catsGet } from "../endpoints";
+import { Cat } from "../types/cat.interface";
+import { useDisclosure } from "@mantine/hooks";
+import EditModal from "./EditForm";
+import { useState } from "react";
+import { EmptyBadgeCard } from "./EmptyBadgeCard";
 
 export default function Cats() {
 
     const queryClient = useQueryClient();
-    console.log(queryClient);
-    const { isLoading,error,data } = useQuery<Cat[]>({
-        queryKey: ['cats'],
-        queryFn: () => 
-        fetch(`${window.location.protocol}//${window.location.hostname}:${window.location.port}/api/cats`) .then(
-            response => response.json()
-        )
-        });
+    const theme = useMantineTheme();
 
-    if(isLoading) return (<Loader/>)
-    if(error)   return (
+    const { isLoading, error, data } = useQuery<Cat[]>(['cats'], catsGet);
+    const [opened, { open, close }] = useDisclosure(false);
+    const [selected, setSelected] = useState<Cat>(undefined!);
+
+    const deleteCat = useMutation<Cat, unknown, number>(['deleteCat',], catsDelete,
+        {
+            onSuccess: () => queryClient.invalidateQueries(['cats'])
+        }
+    )
+
+    if (isLoading) return <Loader />;
+    if (error) return (
         <Alert icon={<IconAlertCircle size="1rem" />} title="Bummer!" color="red">
-        Something terrible happened! You made a mistake and there is no going back, your data was lost forever!
+            Something terrible happened! You made a mistake and there is no going back, your data was lost forever!
         </Alert>
     );
-    return(<Grid m='xl'  justify="center" columns={12}>{
-        data?.map(c =>
-        <Grid.Col sm={6} md={4} lg={3} xl={2} >
-            <BadgeCard cat={c} 
-            onDelete={() => {
-            }} 
-            onEdit={() => {
-            }}
-            ></BadgeCard>
-        </Grid.Col>
-        )}
-    </Grid>)
+    return (
+        <>
+            <Modal opened={opened} onClose={close} title="Редактирование"
+                overlayProps={{
+                    color: theme.colorScheme === 'dark' ? theme.colors.dark[9] : theme.colors.gray[2],
+                    opacity: 0.55,
+                    blur: 3,
+                }} centered>
+                <EditModal cat={selected} onSave={close} />
+            </Modal>
+            <Grid m='xl' justify="center" columns={12}>{
+                data?.map(c =>
+                    <Grid.Col sm={6} md={4} lg={3} xl={2} key={c.id}>
+                        <BadgeCard key={c.id} cat={c}
+                            onDelete={() => {
+                                deleteCat.mutate(c.id)
+                            }}
+                            onEdit={() => {
+                                setSelected(c);
+                                open();
+                            }}
+                        ></BadgeCard>
+                    </Grid.Col>
+                )}
+                <Grid.Col sm={6} md={4} lg={3} xl={2} key={'new'}>
+                    <EmptyBadgeCard />
+                </Grid.Col>
+            </Grid>
+        </>)
 }

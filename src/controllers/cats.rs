@@ -40,7 +40,7 @@ type ApiResult<T> = Result<Json<T>,BadRequest<String>>;
 #[get("/cats")]
 async fn get_all(state: &State<MyState>) -> ApiResult<Vec<Cat>>{
     //Cat::query(...)
-    sqlx::query_as("SELECT * FROM cats")
+    sqlx::query_as("SELECT * FROM cats ORDER BY id")
         .fetch_all(&state.db).await
         .to_response()
 }

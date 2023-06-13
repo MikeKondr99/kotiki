@@ -9,6 +9,7 @@ import {
     rem,
 } from '@mantine/core';
 import { IconHeart, IconCoin,IconMars,IconVenus,IconTrash,IconEdit } from '@tabler/icons-react';
+import { Cat } from '../types/cat.interface';
 
 const useStyles = createStyles((theme) => ({
     card: {
@@ -48,18 +49,6 @@ interface BadgeCardProps {
     onEdit:(cat:Cat) => void,
 }
 
-export interface Cat {
-  id: number,
-  name: string,
-  age: number,
-  color: string,
-  sex: string,
-  image: string | undefined,
-  breed: string | undefined,
-  sterilized: boolean,
-  description: string | undefined
-}
-
 export function BadgeCard({cat,onDelete,onEdit, }: BadgeCardProps) {
 
     const { classes, } = useStyles();
@@ -97,16 +86,16 @@ export function BadgeCard({cat,onDelete,onEdit, }: BadgeCardProps) {
 
                     </div>
                     <ActionIcon variant="default" radius="md" size={36}>
-                        <IconCoin size="1.5rem" className={classes.coin} stroke={1.8} />
+                        <IconCoin  className={classes.coin} stroke={1.8} />
                     </ActionIcon>
                     <ActionIcon variant="default" radius="md" size={36}>
-                        <IconHeart size="1.4rem" className={classes.like} stroke={1.8} />
+                        <IconHeart  className={classes.like} stroke={1.8} />
                     </ActionIcon>
                     <ActionIcon variant="default" radius="md" size={36}>
-                        <IconEdit size="1.4rem" className={classes.mars} stroke={1.8} onClick={() => onEdit(cat)} />
+                        <IconEdit  className={classes.mars} stroke={1.8} onClick={() => onEdit(cat)} />
                     </ActionIcon>
                     <ActionIcon color="red" variant="filled" size={36} onClick={() => onDelete(cat)}>
-                        <IconTrash size="1.4rem" stroke={1.8} />
+                        <IconTrash  stroke={1.8} />
                     </ActionIcon>
                 </Group>
             </Card.Section>
