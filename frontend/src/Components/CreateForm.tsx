@@ -3,10 +3,10 @@ import { useForm } from "@mantine/form";
 import { Button, Group, NumberInput, SegmentedControl, Switch, TextInput, Textarea, useMantineTheme } from "@mantine/core";
 import { IconMars, IconVenus } from "@tabler/icons-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { catsCreate} from "../endpoints";
+import { catsCreate } from "../endpoints";
 
 interface CreateModalProps {
-    onSave:() => void;
+    onSave: () => void;
 }
 
 export default function CreateModal({ onSave }: CreateModalProps) {
@@ -21,8 +21,14 @@ export default function CreateModal({ onSave }: CreateModalProps) {
             color: "",
             breed: "",
             sterilized: false,
-            sex: "",
+            sex: "M",
             image: "",
+        },
+        validate: {
+            name: (x) => x.length > 16 ? "Имя должно быть короче 17ти символов" : 
+                         x.length < 1 ? "Нужно указать имя" : null,
+            color: (x) => x.length == 0 ? "Цвет обязательное поле" : null,
+            sex: (x) => x == "M" || x == "F" ? null : "Нужно указать пол"
         }
     });
 
@@ -33,7 +39,10 @@ export default function CreateModal({ onSave }: CreateModalProps) {
     )
 
     return (
-        <form>
+        <form onSubmit={form.onSubmit((values) => {
+            updateCat.mutate(values);
+            onSave();
+        })}>
             <TextInput
                 label="Имя"
                 placeholder="Кличка питомца :3"
@@ -61,7 +70,7 @@ export default function CreateModal({ onSave }: CreateModalProps) {
             <Switch my={15}
                 label="Стерилизован"
                 labelPosition="left"
-                {...form.getInputProps('sterilized')} />
+                {...form.getInputProps('sterilized', { type: 'checkbox' })} />
             <SegmentedControl {...form.getInputProps('sex')}
                 data={[
                     {
@@ -80,7 +89,7 @@ export default function CreateModal({ onSave }: CreateModalProps) {
             />
             <TextInput label="Изображение" placeholder="http://example.com/image.jpg" {...form.getInputProps('image')} />
             <Group position="center" my={10}>
-                <Button color='teal' onClick={() => { updateCat.mutate(form.values);onSave();}}>Сохранить</Button>
+                <Button color='teal' type='submit'>Сохранить</Button>
             </Group>
         </form>
     )

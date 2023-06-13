@@ -52,6 +52,7 @@ interface BadgeCardProps {
 export function BadgeCard({cat,onDelete,onEdit, }: BadgeCardProps) {
 
     const { classes, } = useStyles();
+    const goodSolution = ['Лет','Год','Года','Года','Года','Лет','Лет','Лет','Лет','Лет'];
 
     return (
         <Card withBorder radius="md" p="md" className={classes.card}>
@@ -67,7 +68,7 @@ export function BadgeCard({cat,onDelete,onEdit, }: BadgeCardProps) {
                         : <></>
                     }
                     <Text fz="lg" fw={500}>
-                        {cat.name} {cat.age} { cat.age%10 == 1 ? 'Год' : cat.age%10 >= 2 && cat.age%10 <=4 ? 'Года' : 'Лет' }
+                        {cat.name} {cat.age} { cat.age<20 && cat.age>=10 ? 'Лет' : goodSolution[cat.age%10]}
                     </Text>
                 </Group>
                 <Group position="left" mt='xs'>

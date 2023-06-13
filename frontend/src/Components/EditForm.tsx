@@ -24,6 +24,11 @@ export default function EditModal({ cat,onSave }: EditModalProps) {
             sterilized: cat.sterilized,
             sex: cat.sex,
             image: cat.image,
+        },
+        validate: {
+            name: (x) => x.length > 16 ? "Имя должно быть короче 17ти символов" : null,
+            color: (x) => x.length == 0 ? "Цвет обязательное поле" : null,
+            sex: (x) => x=="M" || x=="F" ? null : "Нужно указать пол"
         }
     });
 
@@ -34,7 +39,10 @@ export default function EditModal({ cat,onSave }: EditModalProps) {
     )
 
     return (
-        <form>
+        <form onSubmit={form.onSubmit((values) => {
+            updateCat.mutate({id:cat.id,cat:values});
+            onSave();
+        })}>
             <TextInput
                 label="Имя"
                 placeholder="Кличка питомца :3"
@@ -62,7 +70,7 @@ export default function EditModal({ cat,onSave }: EditModalProps) {
             <Switch my={15}
                 label="Стерилизован"
                 labelPosition="left"
-                {...form.getInputProps('sterilized')} />
+                {...form.getInputProps('sterilized',{type: 'checkbox'})} />
             <SegmentedControl {...form.getInputProps('sex')}
                 data={[
                     {
@@ -81,7 +89,7 @@ export default function EditModal({ cat,onSave }: EditModalProps) {
             />
             <TextInput label="Изображение" placeholder="http://example.com/image.jpg" {...form.getInputProps('image')} />
             <Group position="center" my={10}>
-                <Button color='teal' onClick={() => { updateCat.mutate({ id: cat.id, cat:form.values });onSave();}}>Сохранить</Button>
+                <Button color='teal' type='submit'>Сохранить</Button>
             </Group>
         </form>
     )
