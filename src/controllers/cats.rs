@@ -9,7 +9,7 @@ use rocket::put;
 use rocket::response::status::BadRequest;
 use rocket::routes;
 use rocket::serde::json::Json;
-use crate::MyState;
+use sqlx::PgPool;
 use crate::models::Cat;
 use crate::models::UpdateCat;
 
@@ -38,39 +38,39 @@ type ApiResult<T> = Result<Json<T>,BadRequest<String>>;
 
 
 #[get("/cats")]
-async fn get_all(state: &State<MyState>) -> ApiResult<Vec<Cat>>{
+async fn get_all(db: &State<PgPool>) -> ApiResult<Vec<Cat>>{
     sqlx::query_as!(Cat,"SELECT * FROM cats ORDER BY id")
-        .fetch_all(&state.db).await
+        .fetch_all(&**db).await
         .to_response()
 }
 
 #[get("/cats/<id>")]
-async fn get_one(state: &State<MyState>,id:i32) -> ApiResult<Cat> {
+async fn get_one(db: &State<PgPool>,id:i32) -> ApiResult<Cat> {
     sqlx::query_as!(Cat,"SELECT * FROM cats WHERE id = $1",id)
-        .fetch_one(&state.db).await
+        .fetch_one(&**db).await
         .to_response()
 }
 
 #[delete("/cats/<id>")]
-async fn delete(state: &State<MyState>,id:i32) -> ApiResult<Cat> {
+async fn delete(db: &State<PgPool>,id:i32) -> ApiResult<Cat> {
     sqlx::query_as!(Cat,"DELETE FROM cats WHERE id = $1 RETURNING *;",id)
-        .fetch_one(&state.db).await
+        .fetch_one(&**db).await
         .to_response()
 }
 
 #[post("/cats",data="<body>")]
-async fn create(state: &State<MyState>,body:Json<UpdateCat>) -> ApiResult<Cat> {
+async fn create(db: &State<PgPool>,body:Json<UpdateCat>) -> ApiResult<Cat> {
     sqlx::query_as!(Cat,r#"
     INSERT INTO cats
     (name,age,color,description,image,sex,breed,sterilized) VALUES
     ($1,$2,$3,$4,$5,$6,$7,$8)
     RETURNING *; "#,body.name,body.age,body.color,body.description,body.image,body.sex,body.breed,body.sterilized)
-        .fetch_one(&state.db).await
+        .fetch_one(&**db).await
         .to_response()
 }
 
 #[put("/cats/<id>",data="<body>")]
-async fn update(state: &State<MyState>,id:i32,body:Json<UpdateCat>) -> ApiResult<Cat> {
+async fn update(db: &State<PgPool>,id:i32,body:Json<UpdateCat>) -> ApiResult<Cat> {
     sqlx::query_as!(Cat,r#"
     UPDATE cats
     SET (name,age,color,description,image,sex,breed,sterilized) =
@@ -78,6 +78,6 @@ async fn update(state: &State<MyState>,id:i32,body:Json<UpdateCat>) -> ApiResult
     WHERE id = $9 
     RETURNING *;
     "#,&body.name,body.age,&body.color,&body.description,&body.image,&body.sex,&body.breed,&body.sterilized,id)
-        .fetch_one(&state.db).await
+        .fetch_one(&**db).await
         .to_response()
 }

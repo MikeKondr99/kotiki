@@ -92,8 +92,8 @@ export function BadgeCard({cat,onDelete,onEdit, }: BadgeCardProps) {
                     <ActionIcon variant="default" radius="md" size={36}>
                         <IconHeart  className={classes.like} stroke={1.8} />
                     </ActionIcon>
-                    <ActionIcon variant="default" radius="md" size={36}>
-                        <IconEdit  className={classes.mars} stroke={1.8} onClick={() => onEdit(cat)} />
+                    <ActionIcon variant="default" radius="md" size={36} onClick={() => onEdit(cat)}>
+                        <IconEdit  className={classes.mars} stroke={1.8}  />
                     </ActionIcon>
                     <ActionIcon color="red" variant="filled" size={36} onClick={() => onDelete(cat)}>
                         <IconTrash  stroke={1.8} />

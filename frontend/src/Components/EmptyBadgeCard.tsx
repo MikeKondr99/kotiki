@@ -9,7 +9,7 @@ import {
     useMantineTheme,
 } from '@mantine/core';
 import { IconCat, IconPlus} from '@tabler/icons-react';
-import { useDisclosure } from '@mantine/hooks';
+import { useDisclosure, useMediaQuery } from '@mantine/hooks';
 import CreateModal from './CreateForm';
 
 const useStyles = createStyles((theme) => ({
@@ -50,10 +50,11 @@ export function EmptyBadgeCard() {
     const theme = useMantineTheme();
     const { classes, } = useStyles();
     const [opened, { open, close }] = useDisclosure(false);
+    const mobile = useMediaQuery('(max-width: 40em)');
 
     return (
         <>
-            <Modal opened={opened} onClose={close} title="Создание"
+            <Modal opened={opened} onClose={close} title="Создание" size='auto' fullScreen={mobile}
                 overlayProps={{
                     color: theme.colorScheme === 'dark' ? theme.colors.dark[9] : theme.colors.gray[2],
                     opacity: 0.55,

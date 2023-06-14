@@ -1,9 +1,9 @@
 import { Cat, UpdateCat } from "../types/cat.interface";
 import { useForm } from "@mantine/form";
-import { Button, Group, NumberInput, SegmentedControl, Switch, TextInput, Textarea, useMantineTheme } from "@mantine/core";
-import { IconMars, IconVenus } from "@tabler/icons-react";
+import { Button, Center, FileButton, Group, NumberInput, SegmentedControl, Switch, TextInput, Textarea, useMantineTheme } from "@mantine/core";
+import { IconMars, IconUpload, IconVenus } from "@tabler/icons-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { catsUpdate } from "../endpoints";
+import { API_LOCATION, catsUpdate, uploadImage } from "../endpoints";
 
 interface EditModalProps {
     cat: Cat,
@@ -87,7 +87,19 @@ export default function EditModal({ cat,onSave }: EditModalProps) {
                     },
                 ]}
             />
-            <TextInput label="Изображение" placeholder="http://example.com/image.jpg" {...form.getInputProps('image')} />
+            <TextInput label="Изображение" placeholder="http://example.com/image.jpg" {...form.getInputProps('image')} rightSection={
+            <FileButton accept="image/png,image/jpeg" onChange={async (file) => {
+                    if(file) {
+                        form.values.image = `${API_LOCATION}/images/${await uploadImage(file)}`
+                    }
+                }}>
+                {(props) => 
+                    <Center>
+                        <IconUpload {...props} size="1.1rem">Upload image</IconUpload>
+                    </Center>
+                }
+            </FileButton>
+            }/>
             <Group position="center" my={10}>
                 <Button color='teal' type='submit'>Сохранить</Button>
             </Group>

@@ -4,7 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { IconAlertCircle } from "@tabler/icons-react";
 import { catsDelete, catsGet } from "../endpoints";
 import { Cat } from "../types/cat.interface";
-import { useDisclosure } from "@mantine/hooks";
+import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 import EditModal from "./EditForm";
 import { useState } from "react";
 import { EmptyBadgeCard } from "./EmptyBadgeCard";
@@ -17,6 +17,7 @@ export default function Cats() {
     const { isLoading, error, data } = useQuery<Cat[]>(['cats'], catsGet);
     const [opened, { open, close }] = useDisclosure(false);
     const [selected, setSelected] = useState<Cat>(undefined!);
+    const mobile = useMediaQuery('(max-width: 40em)');
 
     const deleteCat = useMutation<Cat, unknown, number>(['deleteCat',], catsDelete,
         {
@@ -32,12 +33,12 @@ export default function Cats() {
     );
     return (
         <>
-            <Modal opened={opened} onClose={close} title="Редактирование"
+            <Modal opened={opened} onClose={close} title="Редактирование" size='auto' centered fullScreen={mobile} m={0} 
                 overlayProps={{
                     color: theme.colorScheme === 'dark' ? theme.colors.dark[9] : theme.colors.gray[2],
                     opacity: 0.55,
                     blur: 3,
-                }} centered>
+                }}>
                 <EditModal cat={selected} onSave={close} />
             </Modal>
             <Grid m='xl' justify="center" columns={12}>{
