@@ -1,4 +1,3 @@
-use std::error::Error;
 
 use rocket::Route;
 use rocket::State;

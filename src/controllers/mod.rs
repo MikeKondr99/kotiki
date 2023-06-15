@@ -1,7 +1,6 @@
 mod cats;
 mod react;
 mod images;
-mod result;
 
 use std::error::Error;
 

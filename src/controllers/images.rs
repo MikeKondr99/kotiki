@@ -31,7 +31,7 @@ async fn get_one(folder:&State<PathBuf>,name:String) -> io::Result<NamedFile> {
 async fn create(folder:&State<PathBuf>,mut file:TempFile<'_>) ->  Response<String> {
     let typ = file.content_type().ok_or("Не было типа контента")?;
     let ext = typ.extension().ok_or("Не было расширения")?;
-    if ext!="jpeg" || ext!="png" { return Err(format!("Недоступное расширение {ext}"))}
+    if ext!="jpeg" && ext!="png" { return Err(format!("Недоступное расширение {ext}"))}
 
     let id = Uuid::new_v4();
     let path = format!("{}.{}",id,ext);
