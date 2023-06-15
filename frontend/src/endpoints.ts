@@ -2,7 +2,7 @@ import axios from "axios";
 import { Cat, UpdateCat } from "./types/cat.interface";
 
 const PORT = import.meta.env.VITE_PORT ?? window.location.port
-export const API_LOCATION = `${window.location.protocol}//${window.location.hostname}:${PORT}/api`;
+export const API_LOCATION = `${window.location.protocol}//${window.location.hostname}${PORT ? ':' : ''}${PORT}/api`;
 
 export async function catsGet(): Promise<Cat[]> {
     return axios.get<Cat[]>(`${API_LOCATION}/cats`).then(x => x.data);

@@ -1,9 +1,7 @@
 
 use rocket::Route;
 use rocket::fs::TempFile;
-use rocket::http::uncased::UncasedStr;
 use rocket::post;
-use tracing::error;
 use uuid::Uuid;
 use rocket::fs::NamedFile;
 use std::io;
@@ -11,6 +9,10 @@ use std::path::PathBuf;
 use rocket::State;
 use rocket::get;
 use rocket::routes;
+
+use crate::controllers::Response;
+
+use super::ErrStatus;
 
 pub struct ImagesController;
 
@@ -26,14 +28,13 @@ async fn get_one(folder:&State<PathBuf>,name:String) -> io::Result<NamedFile> {
 }
 
 #[post("/images",data="<file>")]
-async fn create(folder:&State<PathBuf>,mut file:TempFile<'_>) -> String {
+async fn create(folder:&State<PathBuf>,mut file:TempFile<'_>) ->  Response<String> {
+    let typ = file.content_type().ok_or("Не было типа контента")?;
+    let ext = typ.extension().ok_or("Не было расширения")?;
+    if ext!="jpeg" || ext!="png" { return Err(format!("Недоступное расширение {ext}"))}
+
     let id = Uuid::new_v4();
-    if let Some(Some(ext)) = file.content_type().map(|x| x.extension()) {
-        if ext=="jpeg" || ext=="png" {
-            let path = format!("{}.{}",id,ext);
-            file.persist_to(folder.join("images").join(&path)).await.unwrap();
-            return path;
-        }
-    }
-    panic!();
+    let path = format!("{}.{}",id,ext);
+    file.persist_to(folder.join("images").join(&path)).await.err_status()?;
+    Ok(path)
 }
