@@ -35,6 +35,7 @@ async fn create(folder:&State<PathBuf>,mut file:TempFile<'_>) ->  Response<Strin
 
     let id = Uuid::new_v4();
     let path = format!("{}.{}",id,ext);
+    std::fs::create_dir(folder.join("images")).err_status()?;
     file.persist_to(folder.join("images").join(&path)).await.err_status()?;
     Ok(path)
 }
